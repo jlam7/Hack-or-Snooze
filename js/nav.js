@@ -9,9 +9,10 @@
 function navAllStories(evt) {
 	console.debug('navAllStories', evt);
 	hidePageComponents();
-	putStoriesOnPage();
+	putStoriesOnPage(storyList);
 	displayIcon();
 	checkLocalStorage();
+	page = 'home';
 }
 
 $body.on('click', '#nav-all', navAllStories);
@@ -34,6 +35,8 @@ function updateNavOnLogin() {
 	$('.main-nav-links').show();
 	$navLogin.hide();
 	$navLogOut.show();
+	$navFavorites.show();
+	$navAddStory.show();
 	$navUserProfile.text(`${currentUser.username}`).show();
 }
 
@@ -43,6 +46,21 @@ function navAddStory() {
 	console.debug('navAddStory');
 	hidePageComponents();
 	$addStoryForm.show();
+	page = 'add-story';
 }
 
 $navAddStory.on('click', navAddStory);
+
+// Show a list of the logged-in user's favorite stories
+function navFavorites() {
+	console.debug('navFavorites');
+	hidePageComponents();
+
+	let stories = currentUser.favorites.map((story) => new Story(story));
+	let favoriteList = { stories };
+	putStoriesOnPage(favoriteList);
+	updateUIOnUserLogin();
+	page = 'favorites';
+}
+
+$navFavorites.on('click', navFavorites);

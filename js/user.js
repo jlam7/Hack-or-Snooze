@@ -2,7 +2,7 @@
 
 // global to hold the User instance of the currently-logged-in user
 let currentUser;
-
+let page = 'home';
 /******************************************************************************
  * User login/signup/login
  */
@@ -141,10 +141,13 @@ async function handleFavorites(evt) {
 				$btn.removeClass('favorite');
 				$btn.data('favorite', false);
 
+				if (page === 'favorites') $(evt.target.closest('li')).remove();
+
 				let removedFavorite = await currentUser.removeFavorite(currentUser, $storyId);
 				currentUser.favorites = [ ...removedFavorite ];
 				localStorage.setItem('favoritesList', JSON.stringify(currentUser.favorites));
 			}
+			console.log($allStoriesList[0]);
 		}
 	} catch (e) {
 		console.log(e);

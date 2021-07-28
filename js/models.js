@@ -213,7 +213,7 @@ class User {
 				method : 'POST',
 				data   : { token: `${user.loginToken}` }
 			});
-			console.log(response.data.user);
+			console.log(response.data);
 
 			let { favorites } = response.data.user;
 			return favorites;
@@ -231,7 +231,7 @@ class User {
 				method : 'DELETE',
 				data   : { token: `${user.loginToken}` }
 			});
-			console.log(response.data.user);
+			console.log(response.data);
 
 			let { favorites } = response.data.user;
 			return favorites;

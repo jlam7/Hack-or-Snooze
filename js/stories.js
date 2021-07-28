@@ -9,7 +9,7 @@ async function getAndShowStoriesOnStart() {
 	storyList = await StoryList.getStories();
 	$storiesLoadingMsg.remove();
 
-	putStoriesOnPage();
+	putStoriesOnPage(storyList);
 }
 
 /**
@@ -38,13 +38,13 @@ function generateStoryMarkup(story) {
 
 /** Gets list of stories from server, generates their HTML, and puts on page. */
 
-function putStoriesOnPage() {
+function putStoriesOnPage(list) {
 	console.debug('putStoriesOnPage');
 
 	$allStoriesList.empty();
 
 	// loop through all of our stories and generate HTML for them
-	for (let story of storyList.stories) {
+	for (let story of list.stories) {
 		const $story = generateStoryMarkup(story);
 		$allStoriesList.append($story);
 	}
