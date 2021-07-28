@@ -6,12 +6,12 @@
 
 /** Show main list of all stories when click site name */
 
-function navAllStories(evt) {
+async function navAllStories(evt) {
 	console.debug('navAllStories', evt);
 	hidePageComponents();
+	storyList = await StoryList.getStories();
 	putStoriesOnPage(storyList);
-	displayIcon();
-	checkLocalStorage();
+	updateUIOnUserLogin();
 	page = 'home';
 }
 

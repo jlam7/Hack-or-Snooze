@@ -94,6 +94,23 @@ class StoryList {
 			console.log(e);
 		}
 	}
+
+	// delete a story from the DOM and ownStories list
+
+	async deleteStory(user, storyId) {
+		try {
+			const response = await axios({
+				url    : `${BASE_URL}/stories/${storyId}`,
+				method : 'DELETE',
+				data   : { token: `${user.loginToken}` }
+			});
+
+			let { story } = response.data;
+			return story;
+		} catch (e) {
+			console.log(e);
+		}
+	}
 }
 
 /******************************************************************************
@@ -233,22 +250,6 @@ class User {
 
 			let { favorites } = response.data.user;
 			return favorites;
-		} catch (e) {
-			console.log(e);
-		}
-	}
-
-	// delete a story from the DOM and ownStories list
-
-	async deleteStory(user, storyId) {
-		try {
-			const response = await axios({
-				url    : `${BASE_URL}/stories/${storyId}`,
-				method : 'DELETE',
-				data   : { token: `${user.loginToken}` }
-			});
-
-			return response.data.story;
 		} catch (e) {
 			console.log(e);
 		}

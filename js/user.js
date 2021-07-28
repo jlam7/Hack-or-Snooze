@@ -119,6 +119,10 @@ function updateUIOnUserLogin() {
 		localStorage.setItem('favoritesList', JSON.stringify(currentUser.favorites));
 		checkLocalStorage();
 	}
+	if (currentUser && currentUser.ownStories.length) {
+		localStorage.setItem('ownStories', JSON.stringify(currentUser.ownStories));
+		displayDeleteBtn();
+	}
 }
 
 // handles adding/removing a story from the favorites list
@@ -159,9 +163,19 @@ $('ol').on('click', handleFavorites);
 
 function displayIcon() {
 	if (currentUser !== undefined) {
-		$('li button').show();
+		$('li button.icon').show();
 	} else {
 		return;
+	}
+}
+
+function displayDeleteBtn() {
+	if (localStorage.getItem('ownStories')) {
+		let parseList = JSON.parse(localStorage.getItem('ownStories'));
+		for (let story of parseList) {
+			const id = story.storyId;
+			$(`#${id} button.trash`).show();
+		}
 	}
 }
 
@@ -184,13 +198,23 @@ async function handleDelete(evt) {
 	try {
 		if (evt.target.className.includes('trash')) {
 			const $btn = $(evt.target).closest('button');
-			const $storyId = $btn.parent().attr('id');
+			const $storyId = $btn.closest('li').attr('id');
 
 			$(evt.target.closest('li')).remove();
-			let deleteStory = await currentUser.deleteStory(currentUser, $storyId);
+			let deleteStory = await storyList.deleteStory(currentUser, $storyId);
+
+			let idx;
+			for (let story of currentUser.ownStories) {
+				if (story.storyId === deleteStory.storyId) {
+					idx = currentUser.ownStories.indexOf(story);
+					currentUser.ownStories.splice(idx, 1);
+					localStorage.setItem('ownStories', JSON.stringify(currentUser.ownStories));
+				}
+			}
 		}
 	} catch (e) {
 		console.log(e);
 	}
 }
+
 $('ol').on('click', handleDelete);
