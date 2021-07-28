@@ -109,8 +109,46 @@ function saveUserCredentialsInLocalStorage() {
 
 function updateUIOnUserLogin() {
 	console.debug('updateUIOnUserLogin');
-
+	hidePageComponents();
 	$allStoriesList.show();
 
 	updateNavOnLogin();
+	displayIcon();
+}
+
+// handles adding/removing a story from the favorites list
+async function handleFavorites(evt) {
+	try {
+		if (evt.target.className === 'far fa-star') {
+			// const storyId = evt.target.parentNode.parentNode.id;
+			const $storyId = $(evt.target).parent().parent().attr('id');
+			const $favorite = $(evt.target).parent().data('favorite');
+
+			if ($favorite === false) {
+				$(evt.target).parent().addClass('favorite');
+				let newFavorite = await currentUser.addFavorite(currentUser, $storyId);
+				currentUser.favorites = [ ...newFavorite ];
+				$(evt.target).parent().data('favorite', true);
+			} else {
+				$(evt.target).parent().removeClass('favorite');
+				let removedFavorite = await currentUser.removeFavorite(currentUser, $storyId);
+				currentUser.favorites = [ ...removedFavorite ];
+				$(evt.target).parent().data('favorite', false);
+			}
+		}
+	} catch (e) {
+		console.log(e);
+	}
+}
+
+$('ol').on('click', handleFavorites);
+
+// display favorite icon only when the user is logged in
+
+function displayIcon() {
+	if (currentUser !== undefined) {
+		$('li button').show();
+	} else {
+		return;
+	}
 }

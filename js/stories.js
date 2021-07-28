@@ -30,7 +30,7 @@ function generateStoryMarkup(story) {
         </a>
         <small class="story-hostname">(${hostName})</small>
         <small class="story-author">by ${story.author}</small>
-        <button><i class="far fa-star"></i></button>
+        <button class='hidden' data-favorite=false><i class="far fa-star"></i></button>
         <small class="story-user">posted by ${story.username}</small>
       </li>
     `);
@@ -51,6 +51,10 @@ function putStoriesOnPage() {
 
 	$allStoriesList.show();
 }
+
+// Get favorites list from server and update DOM to show the list
+
+// use input values from the form to create newStory and update the DOM with a newStory
 
 async function submitAddStoryForm(evt) {
 	try {

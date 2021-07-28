@@ -204,9 +204,53 @@ class User {
 		}
 	}
 
-	// async function addFavorite() {
+	// add a story to favorites list
 
-	// }
+	async addFavorite(user, storyId) {
+		try {
+			const response = await axios({
+				url    : `${BASE_URL}/users/${user.username}/favorites/${storyId}`,
+				method : 'POST',
+				data   : { token: `${user.loginToken}` }
+			});
+			console.log(response.data.user);
 
-	// async function removeFavorite() {}
+			let { favorites } = response.data.user;
+			return favorites;
+		} catch (e) {
+			console.log(e);
+		}
+	}
+
+	// remove a story from favorites list
+
+	async removeFavorite(user, storyId) {
+		try {
+			const response = await axios({
+				url    : `${BASE_URL}/users/${user.username}/favorites/${storyId}`,
+				method : 'DELETE',
+				data   : { token: `${user.loginToken}` }
+			});
+			console.log(response.data.user);
+
+			let { favorites } = response.data.user;
+			return favorites;
+		} catch (e) {
+			console.log(e);
+		}
+	}
+
+	// delete a story from the DOM and ownStories list
+
+	async deleteStory(user, storyId) {
+		try {
+			const response = await axios({
+				url    : `${BASE_URL}/stories/${storyId}`,
+				method : 'DELETE',
+				data   : { token: `${user.loginToken}` }
+			});
+		} catch (e) {
+			console.log(e);
+		}
+	}
 }
