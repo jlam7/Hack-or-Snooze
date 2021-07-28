@@ -147,7 +147,6 @@ async function handleFavorites(evt) {
 				currentUser.favorites = [ ...removedFavorite ];
 				localStorage.setItem('favoritesList', JSON.stringify(currentUser.favorites));
 			}
-			console.log($allStoriesList[0]);
 		}
 	} catch (e) {
 		console.log(e);
@@ -173,8 +172,25 @@ function checkLocalStorage() {
 		let parseList = JSON.parse(localStorage.getItem('favoritesList'));
 		for (let story of parseList) {
 			const id = story.storyId;
-			$(`#${id} button`).addClass('favorite');
-			$(`#${id} button`).data('favorite', true);
+			$(`#${id} button.icon`).addClass('favorite');
+			$(`#${id} button.icon`).data('favorite', true);
 		}
 	}
 }
+
+// delete a story
+
+async function handleDelete(evt) {
+	try {
+		if (evt.target.className.includes('trash')) {
+			const $btn = $(evt.target).closest('button');
+			const $storyId = $btn.parent().attr('id');
+
+			$(evt.target.closest('li')).remove();
+			let deleteStory = await currentUser.deleteStory(currentUser, $storyId);
+		}
+	} catch (e) {
+		console.log(e);
+	}
+}
+$('ol').on('click', handleDelete);

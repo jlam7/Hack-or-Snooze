@@ -86,8 +86,8 @@ class StoryList {
 				data   : data
 			});
 
-			const story = new Story(newStory);
-			this.stories.push(story);
+			const story = new Story(response.data.story);
+			this.stories.unshift(story);
 
 			return story;
 		} catch (e) {
@@ -213,7 +213,6 @@ class User {
 				method : 'POST',
 				data   : { token: `${user.loginToken}` }
 			});
-			console.log(response.data);
 
 			let { favorites } = response.data.user;
 			return favorites;
@@ -231,7 +230,6 @@ class User {
 				method : 'DELETE',
 				data   : { token: `${user.loginToken}` }
 			});
-			console.log(response.data);
 
 			let { favorites } = response.data.user;
 			return favorites;
@@ -249,6 +247,8 @@ class User {
 				method : 'DELETE',
 				data   : { token: `${user.loginToken}` }
 			});
+
+			return response.data.story;
 		} catch (e) {
 			console.log(e);
 		}

@@ -31,6 +31,7 @@ function generateStoryMarkup(story) {
         <small class="story-hostname">(${hostName})</small>
         <small class="story-author">by ${story.author}</small>
         <button class='icon hidden' data-favorite=false><i class="far fa-star icon"></i></button>
+        <button class='trash hidden'><i class="fas fa-trash"></i></button>
         <small class="story-user">posted by ${story.username}</small>
       </li>
     `);
@@ -71,9 +72,12 @@ async function submitAddStoryForm(evt) {
 			url
 		};
 
-		let newStory = await storyList.addStory(currentUser, storyObj);
-		putStoriesOnPage();
 		$addStoryForm.trigger('reset');
+
+		let newStory = await storyList.addStory(currentUser, storyObj);
+
+		putStoriesOnPage(storyList);
+		updateUIOnUserLogin();
 	} catch (e) {
 		console.log(e);
 	}
