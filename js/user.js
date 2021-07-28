@@ -113,27 +113,37 @@ function updateUIOnUserLogin() {
 	$allStoriesList.show();
 
 	updateNavOnLogin();
+
 	displayIcon();
+	if (currentUser && currentUser.favorites.length) {
+		localStorage.setItem('favoritesList', JSON.stringify(currentUser.favorites));
+		checkLocalStorage();
+	}
 }
 
 // handles adding/removing a story from the favorites list
+
 async function handleFavorites(evt) {
 	try {
-		if (evt.target.className === 'far fa-star') {
-			// const storyId = evt.target.parentNode.parentNode.id;
-			const $storyId = $(evt.target).parent().parent().attr('id');
-			const $favorite = $(evt.target).parent().data('favorite');
+		if (evt.target.className.includes('icon')) {
+			const $btn = $(evt.target).closest('button');
+			const $storyId = $btn.parent().attr('id');
+			const $favorite = $btn.data('favorite');
 
 			if ($favorite === false) {
-				$(evt.target).parent().addClass('favorite');
+				$btn.addClass('favorite');
+				$btn.data('favorite', true);
+
 				let newFavorite = await currentUser.addFavorite(currentUser, $storyId);
 				currentUser.favorites = [ ...newFavorite ];
-				$(evt.target).parent().data('favorite', true);
+				localStorage.setItem('favoritesList', JSON.stringify(currentUser.favorites));
 			} else {
-				$(evt.target).parent().removeClass('favorite');
+				$btn.removeClass('favorite');
+				$btn.data('favorite', false);
+
 				let removedFavorite = await currentUser.removeFavorite(currentUser, $storyId);
 				currentUser.favorites = [ ...removedFavorite ];
-				$(evt.target).parent().data('favorite', false);
+				localStorage.setItem('favoritesList', JSON.stringify(currentUser.favorites));
 			}
 		}
 	} catch (e) {
@@ -150,5 +160,18 @@ function displayIcon() {
 		$('li button').show();
 	} else {
 		return;
+	}
+}
+
+// check localStorage for saved favoritesList and updates button
+
+function checkLocalStorage() {
+	if (localStorage.getItem('favoritesList')) {
+		let parseList = JSON.parse(localStorage.getItem('favoritesList'));
+		for (let story of parseList) {
+			const id = story.storyId;
+			$(`#${id} button`).addClass('favorite');
+			$(`#${id} button`).data('favorite', true);
+		}
 	}
 }

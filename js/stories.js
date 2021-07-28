@@ -30,7 +30,7 @@ function generateStoryMarkup(story) {
         </a>
         <small class="story-hostname">(${hostName})</small>
         <small class="story-author">by ${story.author}</small>
-        <button class='hidden' data-favorite=false><i class="far fa-star"></i></button>
+        <button class='icon hidden' data-favorite=false><i class="far fa-star icon"></i></button>
         <small class="story-user">posted by ${story.username}</small>
       </li>
     `);

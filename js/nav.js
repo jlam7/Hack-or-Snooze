@@ -11,6 +11,7 @@ function navAllStories(evt) {
 	hidePageComponents();
 	putStoriesOnPage();
 	displayIcon();
+	checkLocalStorage();
 }
 
 $body.on('click', '#nav-all', navAllStories);
