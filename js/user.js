@@ -111,17 +111,49 @@ function updateUIOnUserLogin() {
 	console.debug('updateUIOnUserLogin');
 	hidePageComponents();
 	$allStoriesList.show();
-
 	updateNavOnLogin();
 
 	displayIcon();
 	if (currentUser && currentUser.favorites.length) {
 		localStorage.setItem('favoritesList', JSON.stringify(currentUser.favorites));
-		checkLocalStorage();
+		displayFavorites();
 	}
 	if (currentUser && currentUser.ownStories.length) {
 		localStorage.setItem('ownStories', JSON.stringify(currentUser.ownStories));
 		displayDeleteBtn();
+	}
+}
+
+// display favorite icon only when the user is logged in
+
+function displayIcon() {
+	if (currentUser !== undefined) {
+		$('li button.icon').show();
+	}
+}
+
+// check localStorage for saved favoritesList and updates button
+
+function displayFavorites() {
+	if (localStorage.getItem('favoritesList')) {
+		let parseList = JSON.parse(localStorage.getItem('favoritesList'));
+		for (let story of parseList) {
+			const id = story.storyId;
+			$(`#${id} button.icon`).addClass('favorite');
+			$(`#${id} button.icon`).data('favorite', true);
+		}
+	}
+}
+
+// display delete button
+
+function displayDeleteBtn() {
+	if (localStorage.getItem('ownStories')) {
+		let parseList = JSON.parse(localStorage.getItem('ownStories'));
+		for (let story of parseList) {
+			const id = story.storyId;
+			$(`#${id} button.trash`).show();
+		}
 	}
 }
 
@@ -145,7 +177,7 @@ async function handleFavorites(evt) {
 				$btn.removeClass('favorite');
 				$btn.data('favorite', false);
 
-				if (page === 'favorites') $(evt.target.closest('li')).remove();
+				if (page === 'favorites') $(evt.target).closest('li').remove();
 
 				let removedFavorite = await currentUser.removeFavorite(currentUser, $storyId);
 				currentUser.favorites = [ ...removedFavorite ];
@@ -159,39 +191,6 @@ async function handleFavorites(evt) {
 
 $('ol').on('click', handleFavorites);
 
-// display favorite icon only when the user is logged in
-
-function displayIcon() {
-	if (currentUser !== undefined) {
-		$('li button.icon').show();
-	} else {
-		return;
-	}
-}
-
-function displayDeleteBtn() {
-	if (localStorage.getItem('ownStories')) {
-		let parseList = JSON.parse(localStorage.getItem('ownStories'));
-		for (let story of parseList) {
-			const id = story.storyId;
-			$(`#${id} button.trash`).show();
-		}
-	}
-}
-
-// check localStorage for saved favoritesList and updates button
-
-function checkLocalStorage() {
-	if (localStorage.getItem('favoritesList')) {
-		let parseList = JSON.parse(localStorage.getItem('favoritesList'));
-		for (let story of parseList) {
-			const id = story.storyId;
-			$(`#${id} button.icon`).addClass('favorite');
-			$(`#${id} button.icon`).data('favorite', true);
-		}
-	}
-}
-
 // delete a story
 
 async function handleDelete(evt) {
@@ -200,17 +199,16 @@ async function handleDelete(evt) {
 			const $btn = $(evt.target).closest('button');
 			const $storyId = $btn.closest('li').attr('id');
 
-			$(evt.target.closest('li')).remove();
-			let deleteStory = await storyList.deleteStory(currentUser, $storyId);
+			const idx = currentUser.ownStories.findIndex(({ storyId }) => storyId === $storyId);
+			currentUser.ownStories.splice(idx, 1);
+			localStorage.setItem('ownStories', JSON.stringify(currentUser.ownStories));
 
-			let idx;
-			for (let story of currentUser.ownStories) {
-				if (story.storyId === deleteStory.storyId) {
-					idx = currentUser.ownStories.indexOf(story);
-					currentUser.ownStories.splice(idx, 1);
-					localStorage.setItem('ownStories', JSON.stringify(currentUser.ownStories));
-				}
-			}
+			const idx2 = currentUser.favorites.findIndex(({ storyId }) => storyId === $storyId);
+			currentUser.favorites.splice(idx2, 1);
+			localStorage.setItem('favoritesList', JSON.stringify(currentUser.favorites));
+
+			$btn.closest('li').remove();
+			await storyList.deleteStory(currentUser, $storyId);
 		}
 	} catch (e) {
 		console.log(e);

@@ -53,8 +53,6 @@ function putStoriesOnPage(list) {
 	$allStoriesList.show();
 }
 
-// Get favorites list from server and update DOM to show the list
-
 // use input values from the form to create newStory and update the DOM with a newStory
 
 async function submitAddStoryForm(evt) {

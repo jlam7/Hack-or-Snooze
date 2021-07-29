@@ -95,7 +95,7 @@ class StoryList {
 		}
 	}
 
-	// delete a story from the DOM and ownStories list
+	// delete a story
 
 	async deleteStory(user, storyId) {
 		try {
@@ -105,7 +105,11 @@ class StoryList {
 				data   : { token: `${user.loginToken}` }
 			});
 
-			let { story } = response.data;
+			const { story } = response.data;
+
+			const idx = this.stories.findIndex(({ storyId }) => storyId === story.storyId);
+			this.stories.splice(idx, 1);
+
 			return story;
 		} catch (e) {
 			console.log(e);
