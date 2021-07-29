@@ -76,8 +76,9 @@ async function submitAddStoryForm(evt) {
 		currentUser.ownStories.push(newStory);
 		localStorage.setItem('ownStories', JSON.stringify(currentUser.ownStories));
 
+		hidePageComponents();
 		putStoriesOnPage(storyList);
-		updateUIOnUserLogin();
+		displayButtons();
 	} catch (e) {
 		console.log(e);
 	}

@@ -25,6 +25,7 @@ async function login(evt) {
 
 	saveUserCredentialsInLocalStorage();
 	updateUIOnUserLogin();
+	displayButtons();
 }
 
 $loginForm.on('submit', login);
@@ -112,13 +113,20 @@ function updateUIOnUserLogin() {
 	hidePageComponents();
 	$allStoriesList.show();
 	updateNavOnLogin();
+	displayButtons();
+}
+
+// display all buttons and saved settings (from localStorage)
+
+function displayButtons() {
+	if (!currentUser) return;
 
 	displayIcon();
-	if (currentUser && currentUser.favorites.length) {
+	if (currentUser.favorites.length) {
 		localStorage.setItem('favoritesList', JSON.stringify(currentUser.favorites));
 		displayFavorites();
 	}
-	if (currentUser && currentUser.ownStories.length) {
+	if (currentUser.ownStories.length) {
 		localStorage.setItem('ownStories', JSON.stringify(currentUser.ownStories));
 		displayDeleteBtn();
 	}
@@ -127,9 +135,7 @@ function updateUIOnUserLogin() {
 // display favorite icon only when the user is logged in
 
 function displayIcon() {
-	if (currentUser !== undefined) {
-		$('li button.icon').show();
-	}
+	$('li button.icon').show();
 }
 
 // check localStorage for saved favoritesList and updates button
@@ -177,7 +183,7 @@ async function handleFavorites(evt) {
 				$btn.removeClass('favorite');
 				$btn.data('favorite', false);
 
-				if (page === 'favorites') $(evt.target).closest('li').remove();
+				if (page === 'favorites') $btn.closest('li').remove();
 
 				let removedFavorite = await currentUser.removeFavorite(currentUser, $storyId);
 				currentUser.favorites = [ ...removedFavorite ];

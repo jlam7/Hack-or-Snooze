@@ -11,7 +11,7 @@ async function navAllStories(evt) {
 	hidePageComponents();
 	storyList = await StoryList.getStories();
 	putStoriesOnPage(storyList);
-	updateUIOnUserLogin();
+	displayButtons();
 	page = 'home';
 }
 
@@ -59,7 +59,7 @@ function navFavorites() {
 	let stories = currentUser.favorites.map((story) => new Story(story));
 	let favoriteList = { stories };
 	putStoriesOnPage(favoriteList);
-	updateUIOnUserLogin();
+	displayButtons();
 	page = 'favorites';
 }
 
