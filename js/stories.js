@@ -74,7 +74,6 @@ async function submitAddStoryForm(evt) {
 
 		let newStory = await storyList.addStory(currentUser, storyObj);
 		currentUser.ownStories.push(newStory);
-		localStorage.setItem('ownStories', JSON.stringify(currentUser.ownStories));
 
 		hidePageComponents();
 		putStoriesOnPage(storyList);

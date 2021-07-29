@@ -143,10 +143,9 @@ function displayIcon() {
 function displayFavorites() {
 	if (localStorage.getItem('favoritesList')) {
 		let parseList = JSON.parse(localStorage.getItem('favoritesList'));
-		for (let story of parseList) {
-			const id = story.storyId;
-			$(`#${id} button.icon`).addClass('favorite');
-			$(`#${id} button.icon`).data('favorite', true);
+		for (let { storyId } of parseList) {
+			$(`#${storyId} button.icon`).addClass('favorite');
+			$(`#${storyId} button.icon`).data('favorite', true);
 		}
 	}
 }
@@ -156,9 +155,8 @@ function displayFavorites() {
 function displayDeleteBtn() {
 	if (localStorage.getItem('ownStories')) {
 		let parseList = JSON.parse(localStorage.getItem('ownStories'));
-		for (let story of parseList) {
-			const id = story.storyId;
-			$(`#${id} button.trash`).show();
+		for (let { storyId } of parseList) {
+			$(`#${storyId} button.trash`).show();
 		}
 	}
 }
@@ -178,7 +176,6 @@ async function handleFavorites(evt) {
 
 				let newFavorite = await currentUser.addFavorite(currentUser, $storyId);
 				currentUser.favorites = [ ...newFavorite ];
-				localStorage.setItem('favoritesList', JSON.stringify(currentUser.favorites));
 			} else {
 				$btn.removeClass('favorite');
 				$btn.data('favorite', false);
@@ -187,7 +184,6 @@ async function handleFavorites(evt) {
 
 				let removedFavorite = await currentUser.removeFavorite(currentUser, $storyId);
 				currentUser.favorites = [ ...removedFavorite ];
-				localStorage.setItem('favoritesList', JSON.stringify(currentUser.favorites));
 			}
 		}
 	} catch (e) {
@@ -207,11 +203,9 @@ async function handleDelete(evt) {
 
 			const idx = currentUser.ownStories.findIndex(({ storyId }) => storyId === $storyId);
 			currentUser.ownStories.splice(idx, 1);
-			localStorage.setItem('ownStories', JSON.stringify(currentUser.ownStories));
 
 			const idx2 = currentUser.favorites.findIndex(({ storyId }) => storyId === $storyId);
 			currentUser.favorites.splice(idx2, 1);
-			localStorage.setItem('favoritesList', JSON.stringify(currentUser.favorites));
 
 			$btn.closest('li').remove();
 			await storyList.deleteStory(currentUser, $storyId);

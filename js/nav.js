@@ -9,6 +9,7 @@
 async function navAllStories(evt) {
 	console.debug('navAllStories', evt);
 	hidePageComponents();
+
 	storyList = await StoryList.getStories();
 	putStoriesOnPage(storyList);
 	displayButtons();
@@ -22,6 +23,7 @@ $body.on('click', '#nav-all', navAllStories);
 function navLoginClick(evt) {
 	console.debug('navLoginClick', evt);
 	hidePageComponents();
+
 	$loginForm.show();
 	$signupForm.show();
 }
@@ -32,6 +34,7 @@ $navLogin.on('click', navLoginClick);
 
 function updateNavOnLogin() {
 	console.debug('updateNavOnLogin');
+
 	$('.main-nav-links').show();
 	$navLogin.hide();
 	$navLogOut.show();
@@ -45,6 +48,7 @@ function updateNavOnLogin() {
 function navAddStory() {
 	console.debug('navAddStory');
 	hidePageComponents();
+
 	$addStoryForm.show();
 	page = 'add-story';
 }
@@ -58,6 +62,7 @@ function navFavorites() {
 
 	let stories = currentUser.favorites.map((story) => new Story(story));
 	let favoriteList = { stories };
+
 	putStoriesOnPage(favoriteList);
 	displayButtons();
 	page = 'favorites';
